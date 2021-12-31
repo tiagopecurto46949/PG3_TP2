@@ -1,10 +1,12 @@
-package Trab2;
+package Trab2.grupo1;
 
 import java.io.*;
+import java.util.PriorityQueue;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static java.lang.Character.getDirectionality;
 import static java.lang.Character.isDigit;
 
 public class StreamUtils {
@@ -12,7 +14,7 @@ public class StreamUtils {
     //método auxiliar
     public static int insert(StringBuilder unformated) {
         int i = unformated.length() % 3;
-        int count=0;
+        int count = 0;
         if (i == 0) i = 3;
 
         for (; i < unformated.length(); i += 4) {
@@ -26,7 +28,7 @@ public class StreamUtils {
     public static int copyWithReplace(Reader in, Writer pw) throws IOException {
 
         int count = 0;
-        int dotCount=0;
+        int dotCount = 0;
         int aux;
         boolean flag = false;
         StringBuilder sb = new StringBuilder();
@@ -35,21 +37,20 @@ public class StreamUtils {
         while ((aux = in.read()) != -1) {
 
             if (isDigit(aux)) {
-                sb.append((char)aux);
+                sb.append((char) aux);
                 count++;
             } else {
                 if (count > 0) {
-                    dotCount+=insert(sb);
+                    dotCount += insert(sb);
                     pw.append(sb);
                     sb.setLength(0);
                     count = 0;
                 }
                 pw.write(aux);
-
             }
         }
-        if (count > 0){
-            dotCount+=insert(sb);
+        if (count > 0) {
+            dotCount += insert(sb);
             pw.append(sb);
         }
 
@@ -59,15 +60,16 @@ public class StreamUtils {
     //alinea ii
     public static int copyWithReplace(String filenameIn, Writer pw) throws IOException {
 
-        int count =0;
+        int count = 0;
 
-        try(FileReader in = new FileReader(filenameIn)){
-            count = copyWithReplace(in , pw);
+        try (FileReader in = new FileReader(filenameIn)) {
+            count = copyWithReplace(in, pw);
         }
-    return count;
+        return count;
     }
+
     //alinea iii
-    public static void printWithReplace (String filenameIn) throws IOException {
+    public static void printWithReplace(String filenameIn) throws IOException {
 
         PrintWriter pw = new PrintWriter(System.out);
         copyWithReplace(filenameIn, pw);
@@ -75,40 +77,45 @@ public class StreamUtils {
     }
 
     //alinea iv
-    public static void copyWithReplace(String filenameIn, String filenameOut) throws IOException{
+    public static void copyWithReplace(String filenameIn, String filenameOut) throws IOException {
 
-        try(FileWriter out = new FileWriter(filenameOut)) { //Sempre que se abre/fecha ficheiros deve ser dentro de um try
+        try (FileWriter out = new FileWriter(filenameOut)) { //Sempre que se abre/fecha ficheiros deve ser dentro de um try
             copyWithReplace(filenameIn, out);
         }
     }
 
     //alinea v
-    public static String contentWithReplace( String content){
+    public static String contentWithReplace(String content) {
         StringReader in = new StringReader(content);
         StringWriter out = new StringWriter();
 
-        try{
-            copyWithReplace(in , out);
-        }catch(IOException e){}
+        try {
+            copyWithReplace(in, out);
+        } catch (IOException e) {
+            return null;
+        }
 
         return out.toString();
     }
 
-    public static <V> int forEachIf(BufferedReader in, Function <String,V> buildValue, Predicate<V> pred, Consumer<V> action) throws IOException{
+    public static <V> int forEachIf(BufferedReader in, Function<String, V> buildValue, Predicate<V> pred, Consumer<V> action) throws IOException {
 
         String line = in.readLine();
         int count = 0;
 
-        while(line != null){
+        while (line != null) {
             V value = buildValue.apply(line);
-            if (pred.test(value)){
+            if (pred.test(value)) {
                 action.accept(value);
-                count ++;
+                count++;
             }
             line = in.readLine();
         }
-
+        return count;
     }
+
+
+
 
 
     public static void main(String[] args) throws IOException{
